@@ -7,7 +7,18 @@ import matplotlib
 #matplotlib.use('qt4agg')
 import matplotlib.pyplot as plt
 from scipy.fftpack import *
+from numpy import pi, polymul
+from scipy.signal import bilinear, lfilter
 
+def getParameters(x):
+    x_f = abs(fft(x))
+    mean = mean(x_f)
+    std = std(x_f)
+    freq = zeros(len(x))
+    for i in range(len(x)):
+        if x_f[i] > (mean-2*std):
+            freq[i] = x_f[i]
+    return freq
 
 def A_weighting(fs):
     """Design of an A-weighting filter.
@@ -34,6 +45,7 @@ def A_weighting(fs):
     # Use the bilinear transformation to get the digital filter.
     # (Octave, MATLAB, and PyLab disagree about Fs vs 1/Fs)
     return bilinear(NUMs, DENs, fs)
+
 
 def coswav(f,fs,duur):
 	lengte=fs*duur
